@@ -6,16 +6,16 @@ import java.net.SocketTimeoutException;
 import org.apache.http.conn.HttpHostConnectException;
 
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.junit.*;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.conn.HttpHostConnectException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import com.github.segmentio.AnalyticsClient;
 import com.github.segmentio.Config;
-import com.github.segmentio.request.BlockingRequester;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BlockingRequesterTest {
@@ -62,7 +62,7 @@ public class BlockingRequesterTest {
         server.setResponseDelay(serverTimeout);
         server.setResponseText(RESPONSE);
         
-        HttpResponse response = requester.executeRequest("write-key", "{\"key\":\"value\"");
+        CloseableHttpResponse response = requester.executeRequest("write-key", "{\"key\":\"value\"");
         
         return requester.readResponseBody(response);
     }

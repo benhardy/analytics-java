@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -54,6 +54,7 @@ public class BlockingRequester implements IRequester {
 	}
 
 	public boolean send(Batch batch) {
+		CloseableHttpResponse response = null;
 		AnalyticsStatistics statistics = client.getStatistics();
 		try {
 			long start = System.currentTimeMillis();
@@ -63,7 +64,7 @@ public class BlockingRequester implements IRequester {
 			
 			String json = gson.toJson(batch);
 			
-			HttpResponse response = executeRequest(batch.getWriteKey(), json);
+			response = executeRequest(batch.getWriteKey(), json);
 			String responseBody = readResponseBody(response);
 			int statusCode = response.getStatusLine().getStatusCode();
 			
@@ -81,12 +82,19 @@ public class BlockingRequester implements IRequester {
 		} catch (IOException e) {
 			logger.error("Failed analytics response. [error = {}]", e.getMessage());
 			fail(batch, statistics);
+		} finally {
+			if (response != null) {
+				try {
+					response.close();
+				} catch(IOException e) {
+					logger.error("error closing HttpResponse in BlockingRequester", e);
+				}
+			}
 		}
-		
 		return false;
 	}
 
-    public HttpResponse executeRequest(String writeKey, String json) 
+    public CloseableHttpResponse executeRequest(String writeKey, String json) 
     		throws ClientProtocolException, IOException {  
     	
         HttpPost post =
@@ -108,7 +116,7 @@ public class BlockingRequester implements IRequester {
         return httpClient.execute(post);
     }
 	
-    public String readResponseBody(HttpResponse response) throws IOException {
+    public String readResponseBody(CloseableHttpResponse response) throws IOException {
         BufferedReader rd 
             = new BufferedReader(
                 new InputStreamReader(
