@@ -3,17 +3,20 @@ package com.github.segmentio.request;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import org.apache.http.conn.HttpHostConnectException;
-
 import org.apache.http.HttpHost;
 import org.apache.http.client.ClientProtocolException;
-import org.junit.*;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.conn.HttpHostConnectException;
+import org.apache.http.impl.client.HttpClients;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+
 import com.github.segmentio.AnalyticsClient;
 import com.github.segmentio.Config;
 
@@ -29,17 +32,17 @@ public class BlockingRequesterTest {
     private static final String RESPONSE = "Timeout Test!";
 
     private StubHttpServer server;
-    
+
     @Before
     public void setup() throws IOException {
         server = new StubHttpServer();
         options.setTimeout(HTTP_TIMEOUT);
         options.setHost("http://localhost:" + server.getServerPort());
         Mockito.when(client.getOptions()).thenReturn(options);
-        requester = new BlockingRequester(client);
-        
+        requester = new BlockingRequester(client, HttpClients.createDefault());
+
     }
-    
+
     @After
     public void teardown() throws IOException {
         server.stop();
@@ -70,7 +73,7 @@ public class BlockingRequesterTest {
     @Test
     public void testProxyHttpRequest() throws IOException {
         options.setProxy(new HttpHost("localhost", 33721));
-        requester = new BlockingRequester(client);
+        requester = new BlockingRequester(client, HttpClients.createDefault());
         try {
           executeHttpRequest(0);
         }

@@ -1,5 +1,7 @@
 package com.github.segmentio;
 
+import org.apache.http.impl.client.HttpClients;
+
 import com.github.segmentio.models.Options;
 import com.github.segmentio.models.Props;
 import com.github.segmentio.models.Traits;
@@ -28,7 +30,7 @@ public class Analytics {
    */
   public static synchronized void initialize(String writeKey) {
     if (defaultClient == null) {
-      defaultClient = new AnalyticsClient(writeKey, new Config());
+      defaultClient = new AnalyticsClient(writeKey, new Config(), HttpClients.createDefault());
     }
   }
 
@@ -51,7 +53,7 @@ public class Analytics {
    */
   public static synchronized void initialize(String writeKey, Config options) {
     if (defaultClient == null) {
-      defaultClient = new AnalyticsClient(writeKey, options);
+      defaultClient = new AnalyticsClient(writeKey, options, HttpClients.createDefault());
     }
   }
 

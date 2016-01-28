@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.impl.client.HttpClients;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,7 +16,6 @@ import com.github.segmentio.AnalyticsClient;
 import com.github.segmentio.Config;
 import com.github.segmentio.models.BasePayload;
 import com.github.segmentio.models.Batch;
-import com.github.segmentio.request.RetryingRequester;
 
 @RunWith(MockitoJUnitRunner.class)
 public class RetryingRequesterTest {
@@ -35,9 +35,9 @@ public class RetryingRequesterTest {
         options.setTimeout(HTTP_TIMEOUT);
         options.setHost("http://localhost:" + server.getServerPort());
     	client = new AnalyticsClient("write-key", options);
-        requester = new RetryingRequester(client);
+        requester = new RetryingRequester(client, HttpClients.createDefault());
     }
-    
+
     @After
     public void teardown() throws IOException {
         server.stop();

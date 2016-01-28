@@ -1,5 +1,6 @@
 package com.github.segmentio.request;
 
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,16 +12,16 @@ public class RetryingRequester extends BlockingRequester {
 
 	private static final Logger logger = LoggerFactory
 			.getLogger(Constants.LOGGER);
-	
+
 	private int retries;
 	private int backoff;
-	
-	public RetryingRequester(AnalyticsClient client) {
-		super(client);
+
+	public RetryingRequester(AnalyticsClient client, CloseableHttpClient httpClient) {
+		super(client, httpClient);
 		retries = client.getOptions().getRetries();
 		backoff = client.getOptions().getBackoff();
 	}
-	
+
 	@Override
 	public boolean send(Batch batch) {
 		int attempts = 0;

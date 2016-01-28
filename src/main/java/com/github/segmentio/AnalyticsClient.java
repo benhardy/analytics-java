@@ -3,6 +3,8 @@ package com.github.segmentio;
 import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,18 +13,17 @@ import com.github.segmentio.flush.IBatchFactory;
 import com.github.segmentio.models.Alias;
 import com.github.segmentio.models.BasePayload;
 import com.github.segmentio.models.Batch;
-import com.github.segmentio.models.Options;
-import com.github.segmentio.models.Props;
 import com.github.segmentio.models.Group;
 import com.github.segmentio.models.Identify;
+import com.github.segmentio.models.Options;
 import com.github.segmentio.models.Page;
+import com.github.segmentio.models.Props;
 import com.github.segmentio.models.Screen;
 import com.github.segmentio.models.Track;
 import com.github.segmentio.models.Traits;
 import com.github.segmentio.request.IRequester;
 import com.github.segmentio.request.RetryingRequester;
 import com.github.segmentio.stats.AnalyticsStatistics;
-import com.google.common.collect.ImmutableMap;
 
 /**
  * The Segment.io Client - Instantiate this to use the Segment.io API.
@@ -68,6 +69,11 @@ public class AnalyticsClient {
 		this(writeKey, new Config());
 	}
 
+	public AnalyticsClient(String writeKey, Config config) {
+
+		this(writeKey, config, HttpClients.createDefault());
+	}
+
 	/**
 	 * Creates a new Segment.io client.
 	 * 
@@ -89,7 +95,7 @@ public class AnalyticsClient {
 	 * 
 	 * 
 	 */
-	public AnalyticsClient(String writeKey, Config config) {
+	public AnalyticsClient(String writeKey, Config config, CloseableHttpClient httpClient) {
 
 		String errorPrefix = "analytics-java client must be initialized with a valid ";
 
@@ -102,8 +108,8 @@ public class AnalyticsClient {
 		this.writeKey = writeKey;
 		this.config = config;
 		this.statistics = new AnalyticsStatistics();
-	    this.requester = new RetryingRequester(this);
-		
+	    this.requester = new RetryingRequester(this, httpClient);
+
 		this.flusher = new Flusher(this, factory, requester);
 		this.flusher.setUncaughtExceptionHandler(flusherExceptionHandler);
 		this.flusher.start();

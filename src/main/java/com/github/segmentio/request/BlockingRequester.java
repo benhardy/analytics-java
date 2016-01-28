@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+import com.google.gson.Gson;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.config.CookieSpecs;
@@ -12,7 +13,6 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +23,6 @@ import com.github.segmentio.models.BasePayload;
 import com.github.segmentio.models.Batch;
 import com.github.segmentio.stats.AnalyticsStatistics;
 import com.github.segmentio.utils.GSONUtils;
-import com.google.gson.Gson;
 
 public class BlockingRequester implements IRequester {
 
@@ -35,12 +34,12 @@ public class BlockingRequester implements IRequester {
 	private CloseableHttpClient httpClient;
 	private RequestConfig defaultRequestConfig;
 
-	public BlockingRequester(AnalyticsClient client) {
+	public BlockingRequester(AnalyticsClient client, CloseableHttpClient httpClient) {
 		this.client = client;
-		httpClient = HttpClients.createDefault();
+		this.httpClient = httpClient;
 		int requestTimeout = client.getOptions().getTimeout();
-		
-        defaultRequestConfig = 
+
+        defaultRequestConfig =
 		        RequestConfig.custom()
 		        .setCookieSpec(CookieSpecs.BEST_MATCH)
 		        .setExpectContinueEnabled(true)
@@ -94,9 +93,9 @@ public class BlockingRequester implements IRequester {
 		return false;
 	}
 
-    public CloseableHttpResponse executeRequest(String writeKey, String json) 
-    		throws ClientProtocolException, IOException {  
-    	
+    public CloseableHttpResponse executeRequest(String writeKey, String json)
+    		throws ClientProtocolException, IOException {
+
         HttpPost post =
                 new HttpPost(client.getOptions().getHost() + "/v1/import");
         post.setConfig(defaultRequestConfig);
