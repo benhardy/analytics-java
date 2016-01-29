@@ -18,8 +18,8 @@
   <url>https://github.com/benhardy/analytics-java/tree/1.x</url>
 
    <scm>
-    <connection>scm:git:https://github.com/benhardy/analytics-java.git</connection>
-    <developerConnection>scm:git:https://github.com/benhardy/analytics-java.git</developerConnection>
+    <connection>scm:git:git://github.com/benhardy/analytics-java.git</connection>
+    <developerConnection>scm:git:git@github.com:benhardy/analytics-java.git</developerConnection>
     <url>https://github.com/benhardy/analytics-java.git</url>
    </scm>
 
