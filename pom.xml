@@ -18,9 +18,9 @@
   <url>https://github.com/segmentio/analytics-java/tree/master</url>
 
    <scm>
-    <connection>scm:git:https://github.com/segmentio/analytics-java.git</connection>
-    <developerConnection>scm:git:https://github.com/segmentio/analytics-java.git</developerConnection>
-    <url>https://github.com/segmentio/analytics-java.git</url>
+    <connection>scm:git:https://github.com/benhardy/analytics-java.git</connection>
+    <developerConnection>scm:git:https://github.com/benhardy/analytics-java.git</developerConnection>
+    <url>https://github.com/benhardy/analytics-java.git</url>
    </scm>
 
  <distributionManagement>
