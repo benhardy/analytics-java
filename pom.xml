@@ -7,7 +7,7 @@
     <version>7</version>
   </parent>
 
-  <groupId>com.github.segmentio</groupId>
+  <groupId>com.opentable.fork.segmentio</groupId>
   <artifactId>analytics</artifactId>
   <description>The analytics API you've always wanted.</description>
   <!--  IMPORTANT: DON'T FORGET TO UPDATE Analytics.VERSION EVERYTIME !!! -->
@@ -15,7 +15,7 @@
   <packaging>jar</packaging>
 
   <name>analytics</name>
-  <url>https://github.com/segmentio/analytics-java/tree/master</url>
+  <url>https://github.com/benhardy/analytics-java/tree/1.x</url>
 
    <scm>
     <connection>scm:git:https://github.com/benhardy/analytics-java.git</connection>
